@@ -4,6 +4,7 @@ from models import db, Client
 from auth import generer_token, token_requis
 from routes_seances import seances_bp
 from routes_mesures import mesures_bp
+import os
 
 
 def create_app(db_uri='sqlite:///coaching.db'):
@@ -60,4 +61,5 @@ def create_app(db_uri='sqlite:///coaching.db'):
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, port=port, host='0.0.0.0')
