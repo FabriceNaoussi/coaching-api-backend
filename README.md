@@ -70,6 +70,7 @@ Le token est obtenu via `/api/login` et reste valide 24h.
 | POST | `/api/seances` | Créer une séance |
 | PUT | `/api/seances/<id>/annuler` | Annuler une séance |
 | PUT | `/api/seances/<id>/replanifier` | Proposer un nouvel horaire |
+| DELETE | `/api/seances/<id>` | Supprimer une séance |
 
 **POST `/api/seances`**
 ```json
@@ -83,6 +84,7 @@ Le token est obtenu via `/api/login` et reste valide 24h.
 | GET | `/api/mesures` | Lister l'historique de mesures du client |
 | POST | `/api/mesures` | Ajouter une mesure |
 | DELETE | `/api/mesures/<id>` | Supprimer une mesure |
+| PUT | `/api/mesures/<id>` | Modifier une mesure (modification partielle) |
 
 **POST `/api/mesures`**
 ```json

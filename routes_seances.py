@@ -65,3 +65,14 @@ def replanifier_seance(client_id_courant, seance_id):
     seance.statut = 'en_attente_changement'
     db.session.commit()
     return jsonify(seance.to_dict()), 200
+
+# --- Supprimer une séance ---
+@seances_bp.route('/api/seances/<int:seance_id>', methods=['DELETE'])
+@token_requis
+def supprimer_seance(client_id_courant, seance_id):
+    seance = Seance.query.filter_by(id=seance_id, client_id=client_id_courant).first()
+    if not seance:
+        return jsonify({'message': 'Séance introuvable'}), 404
+    db.session.delete(seance)
+    db.session.commit()
+    return jsonify({'message': 'Séance supprimée'}), 200

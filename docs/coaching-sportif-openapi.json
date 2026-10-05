@@ -32,13 +32,32 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nom", "email", "mot_de_passe"],
+                "required": [
+                  "nom",
+                  "email",
+                  "mot_de_passe"
+                ],
                 "properties": {
-                  "nom": { "type": "string", "example": "Alice Dupont" },
-                  "email": { "type": "string", "example": "alice@example.com" },
-                  "mot_de_passe": { "type": "string", "example": "motdepasse123" },
-                  "plan_client": { "type": "string", "example": "basique" },
-                  "objectif": { "type": "string", "example": "Perdre 5kg" }
+                  "nom": {
+                    "type": "string",
+                    "example": "Alice Dupont"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "alice@example.com"
+                  },
+                  "mot_de_passe": {
+                    "type": "string",
+                    "example": "motdepasse123"
+                  },
+                  "plan_client": {
+                    "type": "string",
+                    "example": "basique"
+                  },
+                  "objectif": {
+                    "type": "string",
+                    "example": "Perdre 5kg"
+                  }
                 }
               }
             }
@@ -51,12 +70,20 @@
               "application/json": {
                 "example": {
                   "message": "Compte créé",
-                  "client": { "id": 1, "nom": "Alice Dupont", "email": "alice@example.com", "plan_client": "basique", "objectif": "Perdre 5kg" }
+                  "client": {
+                    "id": 1,
+                    "nom": "Alice Dupont",
+                    "email": "alice@example.com",
+                    "plan_client": "basique",
+                    "objectif": "Perdre 5kg"
+                  }
                 }
               }
             }
           },
-          "409": { "description": "Cet email est déjà utilisé" }
+          "409": {
+            "description": "Cet email est déjà utilisé"
+          }
         }
       }
     },
@@ -70,10 +97,19 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["email", "mot_de_passe"],
+                "required": [
+                  "email",
+                  "mot_de_passe"
+                ],
                 "properties": {
-                  "email": { "type": "string", "example": "alice@example.com" },
-                  "mot_de_passe": { "type": "string", "example": "motdepasse123" }
+                  "email": {
+                    "type": "string",
+                    "example": "alice@example.com"
+                  },
+                  "mot_de_passe": {
+                    "type": "string",
+                    "example": "motdepasse123"
+                  }
                 }
               }
             }
@@ -84,11 +120,19 @@
             "description": "Connexion réussie",
             "content": {
               "application/json": {
-                "example": { "token": "eyJhbGciOiJIUzI1NiIs...", "client": { "id": 1, "nom": "Alice Dupont" } }
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIs...",
+                  "client": {
+                    "id": 1,
+                    "nom": "Alice Dupont"
+                  }
+                }
               }
             }
           },
-          "401": { "description": "Email ou mot de passe incorrect" }
+          "401": {
+            "description": "Email ou mot de passe incorrect"
+          }
         }
       }
     },
@@ -96,17 +140,29 @@
       "get": {
         "summary": "Obtenir le profil",
         "description": "Retourne les informations du client actuellement connecté (à partir du token JWT).",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Profil du client",
             "content": {
               "application/json": {
-                "example": { "id": 1, "nom": "Alice Dupont", "email": "alice@example.com", "plan_client": "basique", "objectif": "Perdre 5kg" }
+                "example": {
+                  "id": 1,
+                  "nom": "Alice Dupont",
+                  "email": "alice@example.com",
+                  "plan_client": "basique",
+                  "objectif": "Perdre 5kg"
+                }
               }
             }
           },
-          "401": { "description": "Token manquant, invalide ou expiré" }
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          }
         }
       }
     },
@@ -114,33 +170,68 @@
       "get": {
         "summary": "Lister les séances",
         "description": "Retourne toutes les séances du client connecté, triées par date.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Liste des séances",
             "content": {
               "application/json": {
-                "example": { "seances": [{ "id": 1, "client_id": 1, "date": "2026-09-15T10:00:00", "type_exercice": "Musculation", "duree_minutes": 60, "statut": "confirmee" }] }
+                "example": {
+                  "seances": [
+                    {
+                      "id": 1,
+                      "client_id": 1,
+                      "date": "2026-09-15T10:00:00",
+                      "type_exercice": "Musculation",
+                      "duree_minutes": 60,
+                      "statut": "confirmee"
+                    }
+                  ]
+                }
               }
             }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
           }
         }
       },
       "post": {
         "summary": "Créer une séance",
         "description": "Ajoute une nouvelle séance au calendrier du client connecté.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["date", "type_exercice", "duree_minutes"],
+                "required": [
+                  "date",
+                  "type_exercice",
+                  "duree_minutes"
+                ],
                 "properties": {
-                  "date": { "type": "string", "example": "2026-09-15T10:00:00" },
-                  "type_exercice": { "type": "string", "example": "Musculation" },
-                  "duree_minutes": { "type": "integer", "example": 60 }
+                  "date": {
+                    "type": "string",
+                    "example": "2026-09-15T10:00:00"
+                  },
+                  "type_exercice": {
+                    "type": "string",
+                    "example": "Musculation"
+                  },
+                  "duree_minutes": {
+                    "type": "integer",
+                    "example": 60
+                  }
                 }
               }
             }
@@ -151,9 +242,19 @@
             "description": "Séance créée",
             "content": {
               "application/json": {
-                "example": { "id": 1, "client_id": 1, "date": "2026-09-15T10:00:00", "type_exercice": "Musculation", "duree_minutes": 60, "statut": "confirmee" }
+                "example": {
+                  "id": 1,
+                  "client_id": 1,
+                  "date": "2026-09-15T10:00:00",
+                  "type_exercice": "Musculation",
+                  "duree_minutes": 60,
+                  "statut": "confirmee"
+                }
               }
             }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
           }
         }
       }
@@ -162,13 +263,70 @@
       "get": {
         "summary": "Détail d'une séance",
         "description": "Retourne le détail d'une séance précise appartenant au client connecté.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+          {
+            "name": "seance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
         ],
         "responses": {
-          "200": { "description": "Détail de la séance" },
-          "404": { "description": "Séance introuvable" }
+          "200": {
+            "description": "Détail de la séance"
+          },
+          "404": {
+            "description": "Séance introuvable"
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer une séance",
+        "description": "Supprime définitivement une séance du client connecté. Contrairement à l'annulation, la séance n'est pas conservée dans l'historique.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "seance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Séance supprimée",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Séance supprimée"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          },
+          "404": {
+            "description": "Séance introuvable"
+          }
         }
       }
     },
@@ -176,13 +334,32 @@
       "put": {
         "summary": "Annuler une séance",
         "description": "Change le statut d'une séance à 'annulee'.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+          {
+            "name": "seance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
         ],
         "responses": {
-          "200": { "description": "Séance annulée" },
-          "404": { "description": "Séance introuvable" }
+          "200": {
+            "description": "Séance annulée"
+          },
+          "404": {
+            "description": "Séance introuvable"
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          }
         }
       }
     },
@@ -190,9 +367,21 @@
       "put": {
         "summary": "Replanifier une séance",
         "description": "Propose un nouvel horaire pour une séance (statut passe à 'en_attente_changement').",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+          {
+            "name": "seance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
         ],
         "requestBody": {
           "required": true,
@@ -200,15 +389,29 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["nouvelle_date"],
-                "properties": { "nouvelle_date": { "type": "string", "example": "2026-09-20T14:00:00" } }
+                "required": [
+                  "nouvelle_date"
+                ],
+                "properties": {
+                  "nouvelle_date": {
+                    "type": "string",
+                    "example": "2026-09-20T14:00:00"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Séance replanifiée" },
-          "404": { "description": "Séance introuvable" }
+          "200": {
+            "description": "Séance replanifiée"
+          },
+          "404": {
+            "description": "Séance introuvable"
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          }
         }
       }
     },
@@ -216,32 +419,61 @@
       "get": {
         "summary": "Lister les mesures",
         "description": "Retourne l'historique de progression (poids, masse grasse) du client connecté.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Liste des mesures",
             "content": {
               "application/json": {
-                "example": { "mesures": [{ "id": 1, "client_id": 1, "date": "2026-09-03T21:06:20", "poids": 78.5, "masse_grasse": 18.2 }] }
+                "example": {
+                  "mesures": [
+                    {
+                      "id": 1,
+                      "client_id": 1,
+                      "date": "2026-09-03T21:06:20",
+                      "poids": 78.5,
+                      "masse_grasse": 18.2
+                    }
+                  ]
+                }
               }
             }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
           }
         }
       },
       "post": {
         "summary": "Créer une mesure",
         "description": "Ajoute une nouvelle mesure de poids/masse grasse pour le client connecté.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["poids"],
+                "required": [
+                  "poids"
+                ],
                 "properties": {
-                  "poids": { "type": "number", "example": 78.5 },
-                  "masse_grasse": { "type": "number", "example": 18.2 }
+                  "poids": {
+                    "type": "number",
+                    "example": 78.5
+                  },
+                  "masse_grasse": {
+                    "type": "number",
+                    "example": 18.2
+                  }
                 }
               }
             }
@@ -252,9 +484,18 @@
             "description": "Mesure créée",
             "content": {
               "application/json": {
-                "example": { "id": 1, "client_id": 1, "date": "2026-09-03T21:06:20", "poids": 78.5, "masse_grasse": 18.2 }
+                "example": {
+                  "id": 1,
+                  "client_id": 1,
+                  "date": "2026-09-03T21:06:20",
+                  "poids": 78.5,
+                  "masse_grasse": 18.2
+                }
               }
             }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
           }
         }
       }
@@ -263,13 +504,98 @@
       "delete": {
         "summary": "Supprimer une mesure",
         "description": "Supprime une mesure précise (ex. erreur de saisie), à condition qu'elle appartienne au client connecté.",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "mesure_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+          {
+            "name": "mesure_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
         ],
         "responses": {
-          "200": { "description": "Mesure supprimée" },
-          "404": { "description": "Mesure introuvable" }
+          "200": {
+            "description": "Mesure supprimée"
+          },
+          "404": {
+            "description": "Mesure introuvable"
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          }
+        }
+      },
+      "put": {
+        "summary": "Modifier une mesure",
+        "description": "Modifie une mesure du client connecté. La modification est partielle : seuls les champs envoyés (poids, masse_grasse, date) sont mis à jour.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "mesure_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "poids": {
+                    "type": "number",
+                    "example": 74.0
+                  },
+                  "masse_grasse": {
+                    "type": "number",
+                    "example": 17.5
+                  },
+                  "date": {
+                    "type": "string",
+                    "example": "2026-09-03T21:06:20"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mesure modifiée",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "client_id": 1,
+                  "date": "2026-09-03T21:06:20",
+                  "poids": 74.0,
+                  "masse_grasse": 17.5
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token manquant, invalide ou expiré"
+          },
+          "404": {
+            "description": "Mesure introuvable"
+          }
         }
       }
     }

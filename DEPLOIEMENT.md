@@ -81,7 +81,7 @@ route n'est définie sur `/`.
 2. **Add New API** : nom `Coaching Sportif`, description courte, catégorie
    `Health and Fitness`.
 3. Choisir **OpenAPI** et téléverser `docs/coaching-sportif-openapi.json` (fourni dans ce
-   dépôt). Cette spécification décrit les 10 endpoints, l'authentification Bearer JWT
+   dépôt). Cette spécification décrit les 13 endpoints, l'authentification Bearer JWT
    et des exemples de requêtes/réponses.
 4. Vérifier dans **API Specs → 1.0.0 → Settings → base URL** qu'**une seule** URL est
    configurée : celle de Render (et non `http://127.0.0.1:5000`).

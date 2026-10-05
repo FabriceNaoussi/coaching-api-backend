@@ -74,6 +74,9 @@ class CoachingClient:
         return self._requete("PUT", f"/api/seances/{seance_id}/replanifier",
                              json={"nouvelle_date": nouvelle_date})
 
+    def supprimer_seance(self, seance_id):
+        return self._requete("DELETE", f"/api/seances/{seance_id}")
+
     # --- Mesures ---
     def creer_mesure(self, poids, masse_grasse=None):
         corps = {"poids": poids}
@@ -83,6 +86,14 @@ class CoachingClient:
 
     def lister_mesures(self):
         return self._requete("GET", "/api/mesures")
+
+    def modifier_mesure(self, mesure_id, poids=None, masse_grasse=None):
+        corps = {}
+        if poids is not None:
+            corps["poids"] = poids
+        if masse_grasse is not None:
+            corps["masse_grasse"] = masse_grasse
+        return self._requete("PUT", f"/api/mesures/{mesure_id}", json=corps)
 
     def supprimer_mesure(self, mesure_id):
         return self._requete("DELETE", f"/api/mesures/{mesure_id}")
@@ -113,9 +124,11 @@ if __name__ == "__main__":
         afficher("Détail de la séance", client.obtenir_seance(seance_id))
         afficher("Replanifier la séance", client.replanifier_seance(seance_id, "2026-10-06T09:00:00"))
         afficher("Annuler la séance", client.annuler_seance(seance_id))
+        afficher("Supprimer la séance", client.supprimer_seance(seance_id))
 
         statut, mesure = client.creer_mesure(75.5, 18.0)
         afficher("Créer une mesure", (statut, mesure))
+        afficher("Modifier la mesure", client.modifier_mesure(mesure["id"], poids=74.0))
         afficher("Lister les mesures", client.lister_mesures())
         afficher("Supprimer la mesure", client.supprimer_mesure(mesure["id"]))
 

@@ -40,3 +40,21 @@ def supprimer_mesure(client_id_courant, mesure_id):
     db.session.delete(mesure)
     db.session.commit()
     return jsonify({'message': 'Mesure supprimée'}), 200
+# --- Modifier une mesure ---
+@mesures_bp.route('/api/mesures/<int:mesure_id>', methods=['PUT'])
+@token_requis
+def modifier_mesure(client_id_courant, mesure_id):
+    mesure = Mesure.query.filter_by(id=mesure_id, client_id=client_id_courant).first()
+    if not mesure:
+        return jsonify({'message': 'Mesure introuvable'}), 404
+
+    data = request.get_json()
+    if 'poids' in data:
+        mesure.poids = data['poids']
+    if 'masse_grasse' in data:
+        mesure.masse_grasse = data['masse_grasse']
+    if 'date' in data:
+        mesure.date = datetime.fromisoformat(data['date'])
+
+    db.session.commit()
+    return jsonify(mesure.to_dict()), 200

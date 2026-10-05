@@ -208,3 +208,51 @@ def test_supprimer_mesure_autre_client_refuse(client):
     assert reponse.status_code == 404
     # la mesure de A existe toujours
     assert len(client.get('/api/mesures', headers=headers_a).get_json()['mesures']) == 1
+
+# ---------- CRUD complété : modifier une mesure, supprimer une séance ----------
+
+def test_modifier_mesure(client):
+    headers = creer_client_connecte(client, 'modif@example.com')
+    mesure = client.post('/api/mesures', json={'poids': 80, 'masse_grasse': 20}, headers=headers).get_json()
+
+    reponse = client.put(f"/api/mesures/{mesure['id']}", json={'poids': 78.5}, headers=headers)
+    assert reponse.status_code == 200
+    corps = reponse.get_json()
+    assert corps['poids'] == 78.5
+    assert corps['masse_grasse'] == 20  # champ non envoyé : inchangé
+
+
+def test_modifier_mesure_inexistante(client):
+    headers = creer_client_connecte(client, 'modif2@example.com')
+    reponse = client.put('/api/mesures/999', json={'poids': 70}, headers=headers)
+    assert reponse.status_code == 404
+
+
+def test_modifier_mesure_autre_client_refuse(client):
+    headers_a = creer_client_connecte(client, 'a4@example.com')
+    mesure = client.post('/api/mesures', json={'poids': 70}, headers=headers_a).get_json()
+    headers_b = creer_client_connecte(client, 'b4@example.com')
+
+    reponse = client.put(f"/api/mesures/{mesure['id']}", json={'poids': 1}, headers=headers_b)
+    assert reponse.status_code == 404
+    # la mesure de A n'a pas été modifiée
+    mesures_a = client.get('/api/mesures', headers=headers_a).get_json()['mesures']
+    assert mesures_a[0]['poids'] == 70
+
+
+def test_supprimer_seance(client):
+    headers = creer_client_connecte(client, 'supprseance@example.com')
+    seance = creer_seance(client, headers)
+    reponse = client.delete(f"/api/seances/{seance['id']}", headers=headers)
+    assert reponse.status_code == 200
+    assert client.get('/api/seances', headers=headers).get_json()['seances'] == []
+
+
+def test_supprimer_seance_autre_client_refuse(client):
+    headers_a = creer_client_connecte(client, 'a5@example.com')
+    seance = creer_seance(client, headers_a)
+    headers_b = creer_client_connecte(client, 'b5@example.com')
+
+    reponse = client.delete(f"/api/seances/{seance['id']}", headers=headers_b)
+    assert reponse.status_code == 404
+    assert len(client.get('/api/seances', headers=headers_a).get_json()['seances']) == 1
