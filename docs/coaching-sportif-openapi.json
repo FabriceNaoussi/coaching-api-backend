@@ -1,0 +1,277 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Coaching Sportif API",
+    "description": "API REST pour la gestion du suivi client d'un coach sportif — calendrier de séances, progression (mesures) et authentification sécurisée par JWT.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://coaching-api-backend-uo3x.onrender.com",
+      "description": "Serveur de production (Render)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtenu via /api/login. Envoyer dans l'en-tête: Authorization: Bearer <token>"
+      }
+    }
+  },
+  "paths": {
+    "/api/register": {
+      "post": {
+        "summary": "Inscription",
+        "description": "Crée un nouveau compte client. Le mot de passe est haché avant d'être stocké.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nom", "email", "mot_de_passe"],
+                "properties": {
+                  "nom": { "type": "string", "example": "Alice Dupont" },
+                  "email": { "type": "string", "example": "alice@example.com" },
+                  "mot_de_passe": { "type": "string", "example": "motdepasse123" },
+                  "plan_client": { "type": "string", "example": "basique" },
+                  "objectif": { "type": "string", "example": "Perdre 5kg" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Compte créé avec succès",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Compte créé",
+                  "client": { "id": 1, "nom": "Alice Dupont", "email": "alice@example.com", "plan_client": "basique", "objectif": "Perdre 5kg" }
+                }
+              }
+            }
+          },
+          "409": { "description": "Cet email est déjà utilisé" }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "Connexion",
+        "description": "Authentifie un client et retourne un token JWT valide 24h.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "mot_de_passe"],
+                "properties": {
+                  "email": { "type": "string", "example": "alice@example.com" },
+                  "mot_de_passe": { "type": "string", "example": "motdepasse123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connexion réussie",
+            "content": {
+              "application/json": {
+                "example": { "token": "eyJhbGciOiJIUzI1NiIs...", "client": { "id": 1, "nom": "Alice Dupont" } }
+              }
+            }
+          },
+          "401": { "description": "Email ou mot de passe incorrect" }
+        }
+      }
+    },
+    "/api/profil": {
+      "get": {
+        "summary": "Obtenir le profil",
+        "description": "Retourne les informations du client actuellement connecté (à partir du token JWT).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Profil du client",
+            "content": {
+              "application/json": {
+                "example": { "id": 1, "nom": "Alice Dupont", "email": "alice@example.com", "plan_client": "basique", "objectif": "Perdre 5kg" }
+              }
+            }
+          },
+          "401": { "description": "Token manquant, invalide ou expiré" }
+        }
+      }
+    },
+    "/api/seances": {
+      "get": {
+        "summary": "Lister les séances",
+        "description": "Retourne toutes les séances du client connecté, triées par date.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Liste des séances",
+            "content": {
+              "application/json": {
+                "example": { "seances": [{ "id": 1, "client_id": 1, "date": "2026-09-15T10:00:00", "type_exercice": "Musculation", "duree_minutes": 60, "statut": "confirmee" }] }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une séance",
+        "description": "Ajoute une nouvelle séance au calendrier du client connecté.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["date", "type_exercice", "duree_minutes"],
+                "properties": {
+                  "date": { "type": "string", "example": "2026-09-15T10:00:00" },
+                  "type_exercice": { "type": "string", "example": "Musculation" },
+                  "duree_minutes": { "type": "integer", "example": 60 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Séance créée",
+            "content": {
+              "application/json": {
+                "example": { "id": 1, "client_id": 1, "date": "2026-09-15T10:00:00", "type_exercice": "Musculation", "duree_minutes": 60, "statut": "confirmee" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/seances/{seance_id}": {
+      "get": {
+        "summary": "Détail d'une séance",
+        "description": "Retourne le détail d'une séance précise appartenant au client connecté.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Détail de la séance" },
+          "404": { "description": "Séance introuvable" }
+        }
+      }
+    },
+    "/api/seances/{seance_id}/annuler": {
+      "put": {
+        "summary": "Annuler une séance",
+        "description": "Change le statut d'une séance à 'annulee'.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Séance annulée" },
+          "404": { "description": "Séance introuvable" }
+        }
+      }
+    },
+    "/api/seances/{seance_id}/replanifier": {
+      "put": {
+        "summary": "Replanifier une séance",
+        "description": "Propose un nouvel horaire pour une séance (statut passe à 'en_attente_changement').",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "seance_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nouvelle_date"],
+                "properties": { "nouvelle_date": { "type": "string", "example": "2026-09-20T14:00:00" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Séance replanifiée" },
+          "404": { "description": "Séance introuvable" }
+        }
+      }
+    },
+    "/api/mesures": {
+      "get": {
+        "summary": "Lister les mesures",
+        "description": "Retourne l'historique de progression (poids, masse grasse) du client connecté.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Liste des mesures",
+            "content": {
+              "application/json": {
+                "example": { "mesures": [{ "id": 1, "client_id": 1, "date": "2026-09-03T21:06:20", "poids": 78.5, "masse_grasse": 18.2 }] }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une mesure",
+        "description": "Ajoute une nouvelle mesure de poids/masse grasse pour le client connecté.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["poids"],
+                "properties": {
+                  "poids": { "type": "number", "example": 78.5 },
+                  "masse_grasse": { "type": "number", "example": 18.2 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mesure créée",
+            "content": {
+              "application/json": {
+                "example": { "id": 1, "client_id": 1, "date": "2026-09-03T21:06:20", "poids": 78.5, "masse_grasse": 18.2 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mesures/{mesure_id}": {
+      "delete": {
+        "summary": "Supprimer une mesure",
+        "description": "Supprime une mesure précise (ex. erreur de saisie), à condition qu'elle appartienne au client connecté.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "mesure_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Mesure supprimée" },
+          "404": { "description": "Mesure introuvable" }
+        }
+      }
+    }
+  }
+}
