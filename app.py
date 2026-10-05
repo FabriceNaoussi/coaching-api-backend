@@ -10,7 +10,8 @@ import os
 def create_app(db_uri='sqlite:///coaching.db'):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    app.config['SECRET_KEY'] = 'change-moi-en-production'
+    app.config['SECRET_KEY'] = os.environ.get(
+        'SECRET_KEY', 'cle-de-developpement-NE-PAS-UTILISER-EN-PROD')
 
     db.init_app(app)
     app.register_blueprint(seances_bp)
